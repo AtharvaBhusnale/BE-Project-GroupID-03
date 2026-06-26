@@ -25,6 +25,8 @@ from realesrgan import RealESRGANer
 from segmentation_service import SegmentationService
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
+# Load environment variables early (e.g. from local .env)
+load_dotenv()
 
 #---------------------------------------------------
 # 1. INITIALIZE ALL SERVICES
@@ -76,17 +78,37 @@ def decrypt_file(file_path):
         print(f"Error decrypting {file_path}: {e}")
         return None
 
-try:
-    cred = credentials.Certificate("serviceAccountKey.json")
-    firebase_admin.initialize_app(cred) 
-    db = firestore.client()
-    print("✅ Firebase Admin SDK loaded.")
-except FileNotFoundError:
-    print("🔴 Error: 'serviceAccountKey.json' not found.")
-    db = None
-except ValueError:
-    print("Firebase Admin SDK already initialized.")
-    db = firestore.client()
+firebase_initialized = False
+db = None
+
+# Try loading Firebase from env variable first (standard for cloud deployments)
+firebase_json_str = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+if firebase_json_str:
+    try:
+        import json
+        firebase_info = json.loads(firebase_json_str)
+        cred = credentials.Certificate(firebase_info)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        print("✅ Firebase Admin SDK loaded from environment variable (FIREBASE_SERVICE_ACCOUNT_JSON).")
+        firebase_initialized = True
+    except Exception as e:
+        print(f"🔴 Error initializing Firebase from environment variable: {e}")
+
+# Fallback to local serviceAccountKey.json file if env var was not provided/failed
+if not firebase_initialized:
+    try:
+        cred = credentials.Certificate("serviceAccountKey.json")
+        firebase_admin.initialize_app(cred) 
+        db = firestore.client()
+        print("✅ Firebase Admin SDK loaded from local 'serviceAccountKey.json'.")
+        firebase_initialized = True
+    except FileNotFoundError:
+        print("🔴 Warning: Local 'serviceAccountKey.json' not found, and FIREBASE_SERVICE_ACCOUNT_JSON env var is not set. Database features will be unavailable.")
+    except ValueError:
+        print("Firebase Admin SDK already initialized.")
+        db = firestore.client()
+        firebase_initialized = True
 
 def log_audit_event(user_uid, action, resource_id=None, details=None):
     """Logs an event to the audit_logs collection."""
@@ -108,9 +130,6 @@ def log_audit_event(user_uid, action, resource_id=None, details=None):
 # 2. LOAD AI MODELS
 #---------------------------------------------------
 # --- CONFIGURATION ---
-# Load environment variables from your local .env file
-load_dotenv()  # <--- ADD THIS LINE FIRST
-
 # Get your free API key at https://console.groq.com/keys
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")  
 # ---------------------
@@ -118,10 +137,46 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 chatbot = Chatbot(api_key=GROQ_API_KEY, knowledge_base_path="knowledge_base.json")
 print("✅ Chatbot (LLM) loaded.")
 
+# --- AUTOMATIC MODEL WEIGHTS DOWNLOADS ---
+import urllib.request
+
+def download_model_if_missing(url, dest_path, model_name):
+    if os.path.exists(dest_path):
+        print(f"✅ {model_name} weights already exist at {dest_path}.")
+        return True
+    if not url:
+        print(f"⚠️ {model_name} download URL not configured. Skipping download.")
+        return False
+    
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    print(f"📥 Downloading {model_name} weights from {url}...")
+    try:
+        # Set a standard User-Agent header to avoid HTTP 403 blocks from GitHub or other servers
+        req = urllib.request.Request(
+            url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        )
+        with urllib.request.urlopen(req) as response, open(dest_path, 'wb') as out_file:
+            data = response.read()
+            out_file.write(data)
+        print(f"✅ Successfully downloaded {model_name} weights to {dest_path}.")
+        return True
+    except Exception as e:
+        print(f"🔴 Error downloading {model_name} weights: {e}")
+        return False
+
+# Download model weights if they are missing
+REAL_ESRGAN_URL = os.getenv("REAL_ESRGAN_MODEL_URL", "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth")
+UNET_URL = os.getenv("UNET_MODEL_URL") # Provided by user in environment variables if deploying on cloud
+
+download_model_if_missing(REAL_ESRGAN_URL, os.path.join('weights', 'RealESRGAN_x4plus.pth'), "RealESRGAN")
+if UNET_URL:
+    download_model_if_missing(UNET_URL, os.path.join('weights', 'unet_brain.pth'), "UNet Brain")
+
 def load_enhancer_model():
     model_path = os.path.join('weights', 'RealESRGAN_x4plus.pth')
     if not os.path.exists(model_path):
-        print("🔴 Error: Model file not found")
+        print("🔴 Error: RealESRGAN model file not found and download failed/skipped.")
         return None
     device = torch.device('cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
     print(f"Loading Enhancer model onto device: {device}...")
@@ -135,7 +190,7 @@ def load_enhancer_model():
 
 upsampler = load_enhancer_model()
 
-# Initialize Segmentation Service
+# Initialize Segmentation Service (will use UNet weights if present, else fallback to CV)
 segmentation_service = SegmentationService(model_path='weights/unet_brain.pth')
 
 # Helper function for DICOM processing

@@ -9,8 +9,12 @@ serviceAccountKey.json
 # Local Uploads
 uploads/
 
+# Ignore the environment variables file
+.env
+
 # Large Model Files (Too big for GitHub)
 weights/RealESRGAN_x4plus.pth
+weights/unet_brain.pth
 
 # Datasets (Too big)
 oasis_original_gifs/
@@ -18,4 +22,4 @@ brats_dataset/
 brain_tumor_dataset/
 test_images_hr/
 test_images_lr/
-test_images_output/
+test_images_output/     
