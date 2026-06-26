@@ -1,0 +1,21 @@
+# Virtual Environment
+vr_env_310/
+__pycache__/
+*.pyc
+
+# Environment Variables & Secrets (NEVER UPLOAD THESE!)
+serviceAccountKey.json
+
+# Local Uploads
+uploads/
+
+# Large Model Files (Too big for GitHub)
+weights/RealESRGAN_x4plus.pth
+
+# Datasets (Too big)
+oasis_original_gifs/
+brats_dataset/
+brain_tumor_dataset/
+test_images_hr/
+test_images_lr/
+test_images_output/

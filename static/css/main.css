@@ -1,0 +1,173 @@
+/* Shared styles */
+body {
+    background: linear-gradient(135deg, #f0f7f8 0%, #e2f0f4 100%);
+    font-family: 'Inter', sans-serif;
+    color: #1a202c;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+#chat-box::-webkit-scrollbar,
+#log-table-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-box::-webkit-scrollbar-thumb,
+#log-table-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+#chat-box::-webkit-scrollbar-thumb:hover,
+#log-table-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+#chat-box::-webkit-scrollbar-track,
+#log-table-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader {
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #0d9488;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    animation: spin 1s linear infinite;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Slider Styles */
+.img-comp-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+.img-comp-img {
+    position: absolute;
+    width: auto;
+    height: 100%;
+    overflow: hidden;
+}
+
+.img-comp-img img {
+    display: block;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+}
+
+.img-comp-slider {
+    position: absolute;
+    z-index: 9;
+    cursor: ew-resize;
+    width: 36px;
+    height: 36px;
+    background-color: #0d9488;
+    opacity: 0.9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s;
+}
+.img-comp-slider:hover {
+    transform: scale(1.1);
+}
+
+.img-comp-slider::before {
+    content: '< >';
+    color: white;
+    font-weight: 800;
+    font-size: 10px;
+    letter-spacing: -1px;
+}
+
+/* Custom UI Tweaks based on Neurolumen mockup */
+.neurolumen-logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 1.25rem;
+}
+.neurolumen-icon {
+    background-color: #0d9488;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: bold;
+}
+.neurolumen-tabs button {
+    transition: all 0.2s;
+}
+.neurolumen-tabs button.active {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: #1e293b;
+    font-weight: 600;
+}
+.neurolumen-tabs button:not(.active) {
+    color: #64748b;
+}
+
+/* Specific elements from mockups */
+.btn-primary {
+    background: #0d9488;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+}
+.btn-primary:hover {
+    background: #0f766e;
+}
+
+.btn-danger {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    font-weight: 500;
+}
+.btn-danger:hover {
+    background: #fee2e2;
+}
+
+.btn-outline {
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    background: white;
+    font-weight: 500;
+}
+.btn-outline:hover {
+    background: #f8fafc;
+}

@@ -1,0 +1,45 @@
+{
+  "symptoms": {
+    "headache": {
+      "keywords": ["headache", "migraine", "pain in my head", "head hurt"],
+      "questions": [
+        "How would you rate the pain, from 1 (mild) to 10 (severe)?",
+        "Is the headache sudden and severe, like a 'thunderclap'?"
+      ],
+      "severity_rules": {
+        "10": 5,  
+        "thunderclap": 10 
+      },
+      "info": "Headaches can be caused by many things, from stress to more serious conditions."
+    },
+    "seizure": {
+      "keywords": ["seizure", "convulsion", "shaking", "fit", "spell"],
+      "questions": [
+        "Was this a first-time seizure?",
+        "Did the person lose consciousness?"
+      ],
+      "severity_rules": {
+        "first-time": 8, 
+        "consciousness": 5
+      },
+      "info": "A seizure is a sudden, uncontrolled electrical disturbance in the brain."
+    },
+    "memory_loss": {
+      "keywords": ["memory loss", "forgetting", "can't remember", "confusion"],
+      "questions": [
+        "Is this a sudden, severe confusion or a gradual forgetfulness?",
+        "Is it accompanied by any other symptoms, like headache or dizziness?"
+      ],
+      "severity_rules": {
+        "sudden": 7, 
+        "gradual": 2
+      },
+      "info": "Memory loss can range from normal age-related forgetfulness to a sign of a more serious condition."
+    }
+  },
+  "recommendations": {
+    "low": "Based on our chat, your symptoms seem mild. It's always a good idea to monitor them and consult a doctor if they get worse.",
+    "medium": "The symptoms you've described have some concerning elements. We recommend you schedule an appointment with a doctor for a proper evaluation.",
+    "high": "Your symptoms have several 'red flag' indicators. Please seek medical attention promptly. If this is an emergency, please contact your local emergency services."
+  }
+}
