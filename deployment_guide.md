@@ -66,7 +66,7 @@ Choose either **Render** or **Railway** to host your application 24/7.
    - **Name**: `mri-enhancement-service` (or any name)
    - **Region**: Select the region closest to your users.
    - **Runtime**: `Python`
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `bash build.sh`
    - **Start Command**: `waitress-serve --port=$PORT app:app`
    - **Instance Type**: Select **Free** (or a higher tier if you encounter memory limitations with PyTorch).
 5. Click **Advanced** and add the following **Environment Variables**:
