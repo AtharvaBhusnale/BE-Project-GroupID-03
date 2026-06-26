@@ -1,51 +1,5 @@
 ﻿# MRI_Enhancer
 # BE-Project-GroupID-03
-Ran command: `git push -u origin main`
-Ran command: `git add app.py`
-Ran command: `git commit --amend --no-edit`
-Ran command: `git add .gitignore
-git commit --amend --no-edit`
-Ran command: `git push -u origin main`
-
-I will list the directory contents of the workspace to inspect the project structure, requirements, and configurations. This will help formulate accurate installation steps.
-
-Listed directory MRI%20Enhancement
-
-I will view the `README.md` file to see what installation instructions, if any, are already documented in the repository.
-
-I will view the `requirements.txt` file to understand the package dependencies required for this project.
-
-Viewed requirements.txt:1-229
-
-I will view the top part of `app.py` to identify what framework or server is used (e.g., Flask) and how environment variables/configurations are loaded.
-
-Viewed app.py:1-100
-
-I will view the `.env` file to check the environment variable names and structure required for the project.
-
-Viewed .env
-
-I will view `app.py` around line 111 to see how APIs or API keys are set up.
-
-Viewed app.py:100-140
-
-I will view `setup_doctor.py` to see if there is a script for checking the setup and environment/dependency health.
-
-Viewed setup_doctor.py:1-33
-
-I will view `check_cuda.py` to see if there are check scripts for GPU/PyTorch.
-
-Viewed check_cuda.py:1-19
-
-I will view the `.gitattributes` file to check if Git Large File Storage (LFS) is configured for large weights, which is a key detail the installer needs to know.
-
-Viewed .gitattributes:1-2
-
-I will run a quick command to print the contents of `README.md` since it has a UTF-16LE encoding that standard text readers might struggle with. This will verify if there's any existing documentation we need to refer to.
-
-Ran command: `python -c "import codecs; print(codecs.open('README.md', 'r', 'utf-16').read())"`
-
-Here is the step-by-step guide to installing and running this project from GitHub:
 
 ### 1. Prerequisites
 Before setting up the project, make sure you have the following installed:
